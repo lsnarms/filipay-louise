@@ -727,6 +727,7 @@ class pageComponents {
     );
   }
 
+  // Function to display the "Load Connect" dialog
   void loadConfirmed(
     BuildContext context,
     Function() onOkPressed,

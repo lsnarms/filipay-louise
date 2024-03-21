@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../widgets/components.dart';
-import 'package:hive/hive.dart'; 
+import 'package:hive/hive.dart';
 import 'enterAmount.dart';
 import 'eWallet.dart';
 import 'drawer.dart';
@@ -220,8 +220,6 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
                               context: context,
                               onPressed: () {
                                 buttonData[index]['onPressed']();
-                                loadingConnect(
-                                    double.parse(buttonData[index]['text']));
                               },
                               text: buttonData[index]['text'],
                               BackgroundColor: Colors.white,
@@ -241,8 +239,8 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
                               _focusNode.unfocus();
                               if (_formKey.currentState!.validate()) {
                                 setTrue();
-                                loadingConnect(double.parse(_controller
-                                    .text)); // Call loadingConnect method here
+                                // Call loadingConnect only when confirm button is pressed
+                                loadingConnect(double.parse(_controller.text));
                               }
                             },
                             text: 'CONFIRM',
