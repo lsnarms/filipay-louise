@@ -29,7 +29,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     // Retrieve balance from Hive box
-    balance = _filipay.get('balance', defaultValue: 0.0);
+    balance = sample.getBalance();
   }
 
   void switchPanelPOTG() {

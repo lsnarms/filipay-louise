@@ -5,6 +5,7 @@ import '../widgets/components.dart';
 import 'package:hive/hive.dart';
 import 'enterAmount.dart';
 import 'eWallet.dart';
+import '../functions/functions.dart';
 import 'drawer.dart';
 
 class SelectAmountPage extends StatefulWidget {
@@ -16,6 +17,7 @@ class SelectAmountPage extends StatefulWidget {
 
 class _SelectAmountPageState extends State<SelectAmountPage> {
   final Box _filipay = Hive.box('filipay');
+  pageFunctions _functions = pageFunctions();
 
   double balance = 0.0;
 
@@ -35,15 +37,18 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
 
   void initState() {
     super.initState();
-    // Retrieve balance from Hive box
-    balance = _filipay.get('balance', defaultValue: 0.0);
+    int _currently_logged_user = _functions.current_user_id;
+    balance =
+        _filipay.get('balance_$_currently_logged_user', defaultValue: 0.0);
   }
 
   void updateBalance(double amount) {
     setState(() {
       balance += amount;
-      // Update balance in Hive box
-      _filipay.put('balance', balance);
+      // Retrieve current user's ID
+      int _currently_logged_user = _functions.current_user_id;
+      // Update balance in Hive box using current user's ID
+      _filipay.put('balance_$_currently_logged_user', balance);
     });
   }
 
@@ -69,7 +74,7 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
               setState(() {
                 _isLoading = false;
                 // Update balance when confirmation is completed
-                updateBalance(loadAmount);
+                updateBalance(loadAmount); // This line updates the balance
                 myComponents.loadConfirmed(context, () {
                   // Navigate to the eWallet page after confirmation
                   Navigator.pushReplacement(

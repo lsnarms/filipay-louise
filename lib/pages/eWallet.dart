@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/components.dart';
 import 'package:hive/hive.dart'; // Import Hive package
 import 'topUpPage.dart';
+import '../functions/functions.dart';
 
 class EWalletPage extends StatefulWidget {
   const EWalletPage({Key? key}) : super(key: key);
@@ -12,22 +13,26 @@ class EWalletPage extends StatefulWidget {
 
 class _EWalletPageState extends State<EWalletPage> {
   final Box _filipay = Hive.box('filipay');
+  pageFunctions _functions = pageFunctions();
   pageComponents myComponents = pageComponents();
   late double balance;
 
   @override
   void initState() {
     super.initState();
-    // Retrieve balance from Hive box
-    balance = _filipay.get('balance', defaultValue: 0.0);
+    // Retrieve balance from Hive box using current user's ID
+    int currentUserId = _functions.current_user_id;
+    balance = _filipay.get('balance_$currentUserId', defaultValue: 0.0);
   }
 
   // Method to update balance
   void updateBalance(double newBalance) {
     setState(() {
       balance = newBalance;
-      // Update balance in Hive box
-      _filipay.put('balance', balance);
+      // Retrieve current user's ID
+      int currentUserId = _functions.current_user_id;
+      // Update balance in Hive box using current user's ID
+      _filipay.put('balance_$currentUserId', balance);
     });
   }
 

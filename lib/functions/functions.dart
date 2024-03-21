@@ -118,11 +118,13 @@ class pageFunctions {
   }
 
   double getBalance() {
-    return _filipay.get('balance', defaultValue: 0.0);
+    // Append the current user ID to the balance key
+    return _filipay.get('balance_${_currently_logged_user}', defaultValue: 0.0);
   }
 
   // Method to update the balance
   void updateBalance(double newBalance) {
-    _filipay.put('balance', newBalance);
+    // Append the current user ID to the balance key
+    _filipay.put('balance_${_currently_logged_user}', newBalance);
   }
 }
