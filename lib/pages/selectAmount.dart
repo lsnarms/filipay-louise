@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../widgets/components.dart';
 import 'package:hive/hive.dart'; // Import Hive package
 import 'enterAmount.dart';
+import 'eWallet.dart';
 import 'drawer.dart';
 
 class SelectAmountPage extends StatefulWidget {
@@ -16,7 +17,6 @@ class SelectAmountPage extends StatefulWidget {
 class _SelectAmountPageState extends State<SelectAmountPage> {
   final Box _filipay = Hive.box('filipay');
 
-  double loadAmount = 500.00;
   double balance = 0.0; // Declare balance variable
 
   bool _isLoading = false;
@@ -25,8 +25,11 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
   final FocusNode _focusNode = FocusNode();
 
   void loadingEnter(double amount) {
+    // Set loadAmount when entering the amount manually
+    double loadAmount = amount;
     setState(() {
-      loadAmount = amount;
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => EnterAmountPage()));
     });
   }
 
@@ -50,8 +53,11 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
     });
   }
 
-  void loadingConnect() {
+  void loadingConnect(double loadAmount) {
     setTrue();
+    setState(() {
+      _isLoading = true;
+    });
     Future.delayed(Duration(seconds: 1), () {
       setState(() {
         _isLoading = false;
@@ -65,7 +71,11 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
                 // Update balance when confirmation is completed
                 updateBalance(loadAmount);
                 myComponents.loadConfirmed(context, () {
-                  Navigator.pop(context);
+                  // Navigate to the eWallet page after confirmation
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => EWalletPage()),
+                  );
                 }, "LOADING CONFIRMED", "Cash In", loadAmount);
               });
             });
@@ -86,76 +96,66 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
       {
         'text': '10',
         'onPressed': () {
-          loadAmount = 10;
-          // loadingConnect();
+          double loadAmount = 10;
           _controller.text = "${loadAmount}";
         },
       },
       {
         'text': '20',
         'onPressed': () {
-          loadAmount = 20;
-          // loadingConnect();
+          double loadAmount = 20;
           _controller.text = "${loadAmount}";
         },
       },
       {
         'text': '30',
         'onPressed': () {
-          loadAmount = 30;
-          // loadingConnect();
+          double loadAmount = 30;
           _controller.text = "${loadAmount}";
         },
       },
       {
         'text': '40',
         'onPressed': () {
-          loadAmount = 40;
-          // loadingConnect();
+          double loadAmount = 40;
           _controller.text = "${loadAmount}";
         },
       },
       {
         'text': '50',
         'onPressed': () {
-          loadAmount = 50;
+          double loadAmount = 50;
           _controller.text = "${loadAmount}";
         },
       },
       {
         'text': '100',
         'onPressed': () {
-          loadAmount = 100;
+          double loadAmount = 100;
           _controller.text = "${loadAmount}";
         },
       },
       {
         'text': '250',
         'onPressed': () {
-          loadAmount = 250;
+          double loadAmount = 250;
           _controller.text = "${loadAmount}";
         },
       },
       {
         'text': '500',
         'onPressed': () {
-          loadAmount = 500;
+          double loadAmount = 500;
           _controller.text = "${loadAmount}";
         },
       },
       {
         'text': '1000',
         'onPressed': () {
-          loadAmount = 1000;
+          double loadAmount = 1000;
           _controller.text = "${loadAmount}";
         },
       },
-      // {
-      //   'text': 'Enter Amount',
-      //   'onPressed': () {
-      //     loadingEnter();
-      //   },
-      // },
     ];
     return Scaffold(
         key: scaffoldKey,
@@ -218,7 +218,11 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
                           itemBuilder: (BuildContext context, int index) {
                             return mainButtons.loadButtons(
                               context: context,
-                              onPressed: buttonData[index]['onPressed'],
+                              onPressed: () {
+                                buttonData[index]['onPressed']();
+                                loadingConnect(
+                                    double.parse(buttonData[index]['text']));
+                              },
                               text: buttonData[index]['text'],
                               BackgroundColor: Colors.white,
                               textColor: Color(0xff53a1d8),
@@ -237,7 +241,8 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
                               _focusNode.unfocus();
                               if (_formKey.currentState!.validate()) {
                                 setTrue();
-                                loadingConnect(); // Call loadingConnect method here
+                                loadingConnect(double.parse(_controller
+                                    .text)); // Call loadingConnect method here
                               }
                             },
                             text: 'CONFIRM',

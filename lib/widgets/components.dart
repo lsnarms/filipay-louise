@@ -723,8 +723,13 @@ class pageComponents {
     );
   }
 
-  void loadConfirmed(BuildContext context, Function() onOkPressed,
-      String alertTitle, String alertDescription, double loadAmount) {
+  void loadConfirmed(
+    BuildContext context,
+    Function() onOkPressed,
+    String alertTitle,
+    String alertDescription,
+    double loadAmount,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -763,7 +768,7 @@ class pageComponents {
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  "₱${loadAmount}",
+                  "₱${loadAmount.toStringAsFixed(2)}", // Display the amount
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w400,
