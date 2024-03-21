@@ -362,6 +362,10 @@ class pageComponents {
   }
 
   AppBar appBar({scaffoldKey}) {
+    int userId = pageFunc.current_user_id;
+    String selectedOption = pageFunc.getAccountType(userId);
+    String firstName = pageFunc.getFirstName(userId);
+
     return AppBar(
       backgroundColor: Color.fromRGBO(44, 177, 230, 1.0),
       centerTitle: true,
@@ -382,7 +386,7 @@ class pageComponents {
         Container(
           width: 150.0,
           child: Text(
-            "Hello, Daryll",
+            "Hello, $firstName",
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Color.fromRGBO(39, 50, 115, 1.0),
