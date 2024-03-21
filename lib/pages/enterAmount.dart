@@ -44,7 +44,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
               });
             });
           },
-          "${loadAmount}",
+          loadAmount,
         );
       });
     });

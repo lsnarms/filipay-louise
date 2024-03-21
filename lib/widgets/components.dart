@@ -615,14 +615,19 @@ class pageComponents {
     );
   }
 
-  void slider(BuildContext context, Function() onOkPressed, String loadAmount) {
+  void slider(BuildContext context, Function() onOkPressed, double loadAmount) {
+    // Define service fee
+    double serviceFee = 5.00;
+
+    // Calculate total amount
+    double totalAmount = loadAmount + serviceFee;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           content: Container(
             height: MediaQuery.of(context).size.height * 0.40,
-            // width: MediaQuery.of(context).size.height * 1,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -632,25 +637,21 @@ class pageComponents {
                     Text(
                       "PHP",
                       style: TextStyle(
-                          color: Color(0xff18467e),
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.w600),
+                        color: Color(0xff18467e),
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       "${loadAmount}",
                       style: TextStyle(
-                          fontSize: 28.0, fontWeight: FontWeight.w700),
+                        fontSize: 28.0,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ],
                 ),
                 Divider(),
-                // Text(
-                //   "---------------",
-                //   style: TextStyle(
-                //       fontSize: 35.0,
-                //       color: Colors.grey,
-                //       fontWeight: FontWeight.w800),
-                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -672,7 +673,7 @@ class pageComponents {
                         fontWeight: FontWeight.w300,
                       ),
                     ),
-                    Text("5.00"),
+                    Text("${serviceFee.toStringAsFixed(2)}"),
                   ],
                 ),
                 Row(
@@ -685,7 +686,7 @@ class pageComponents {
                       ),
                     ),
                     Text(
-                      "105.00",
+                      "${totalAmount.toStringAsFixed(2)}",
                     ),
                   ],
                 ),
@@ -693,32 +694,34 @@ class pageComponents {
                   height: 50.0,
                 ),
                 Center(
-                    child: SliderButton(
-                  shimmer: true,
-                  vibrationFlag: true,
-                  width: 230,
-                  height: 60.0,
-                  radius: 25,
-                  buttonColor: Color(0xffef8b06),
-                  backgroundColor: Color(0xffe0e0e0),
-                  highlightedColor: Colors.black,
-                  baseColor: Colors.red,
-                  action: () async {
-                    onOkPressed();
-                    return true;
-                  },
-                  label: Text(
-                    "Slide to confirm",
-                    style: TextStyle(
+                  child: SliderButton(
+                    shimmer: true,
+                    vibrationFlag: true,
+                    width: 230,
+                    height: 60.0,
+                    radius: 25,
+                    buttonColor: Color(0xffef8b06),
+                    backgroundColor: Color(0xffe0e0e0),
+                    highlightedColor: Colors.black,
+                    baseColor: Colors.red,
+                    action: () async {
+                      onOkPressed();
+                      return true;
+                    },
+                    label: Text(
+                      "Slide to confirm",
+                      style: TextStyle(
                         color: Color(0xff4a4a4a),
                         fontWeight: FontWeight.w500,
-                        fontSize: 17),
+                        fontSize: 17,
+                      ),
+                    ),
+                    icon: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: Colors.white,
+                    ),
                   ),
-                  icon: Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    color: Colors.white,
-                  ),
-                ))
+                )
               ],
             ),
           ),

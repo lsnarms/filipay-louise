@@ -80,7 +80,7 @@ class _SelectAmountPageState extends State<SelectAmountPage> {
               });
             });
           },
-          "${loadAmount}",
+          loadAmount,
         );
       });
     });

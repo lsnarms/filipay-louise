@@ -5,20 +5,20 @@ import 'package:flutter/widgets.dart';
 import '../widgets/components.dart';
 
 class TopUpPage extends StatefulWidget {
-  const TopUpPage({super.key});
+  const TopUpPage({Key? key}) : super(key: key);
 
   @override
   State<TopUpPage> createState() => _TopUpPageState();
 }
 
 class _TopUpPageState extends State<TopUpPage> {
-  pageComponents myComponents = pageComponents();
+  final pageComponents myComponents = pageComponents();
 
   String cardNumber = "SN XXXXXXXXX";
   bool isConnected = false;
   Icon myIcon = Icon(Icons.add_circle_outline_sharp, color: Color(0xff18467e));
-
   bool _isLoading = false;
+  String selectedPaymentMethod = ''; // To store the selected payment method
 
   void connected() {
     setState(() {
@@ -52,156 +52,164 @@ class _TopUpPageState extends State<TopUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-            child: Stack(children: [
-      Align(
-        alignment: Alignment.bottomCenter,
-        child: myComponents.background(),
-      ),
-      SingleChildScrollView(
-        child: Column(children: [
-          SizedBox(height: 70.0),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 50.0),
-            child: Center(
-              child: Text(
-                "How would you like to top up?",
-                style: TextStyle(
-                  color: Color(0xff18467e),
-                  fontSize: 35.0,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: myComponents.background(),
             ),
-          ),
-          SizedBox(height: 15.0),
-          if (isConnected)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                myIcon,
-                SizedBox(
-                  width: 20.0,
-                ),
-                Text.rich(
-                  TextSpan(
-                    text: 'Card Connected\n',
-                    style: TextStyle(
-                      color: Color(0xff00adee),
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: cardNumber,
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 70.0),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Center(
+                      child: Text(
+                        "How would you like to top up?",
                         style: TextStyle(
-                          color: Color(0xff00adee),
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w400,
+                          color: Color(0xff18467e),
+                          fontSize: 35.0,
+                          fontWeight: FontWeight.w300,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            )
-          else
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                myIcon,
-                Container(
-                  width: 260.0,
-                  child: TextFormField(
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      hintText: 'Connect FILIPAY Card',
-                      hintStyle: TextStyle(fontSize: 20.0),
-                      border: InputBorder.none,
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                    onSaved: (newValue) {
-                      // Handle the saved value
-                    },
-                    onFieldSubmitted: (value) {
-                      loadingConnect();
-                    },
                   ),
-                ),
-              ],
+                  SizedBox(height: 15.0),
+                  if (isConnected)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        myIcon,
+                        SizedBox(width: 20.0),
+                        Text.rich(
+                          TextSpan(
+                            text: 'Card Connected\n',
+                            style: TextStyle(
+                              color: Color(0xff00adee),
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: cardNumber,
+                                style: TextStyle(
+                                  color: Color(0xff00adee),
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        myIcon,
+                        Container(
+                          width: 260.0,
+                          child: TextFormField(
+                            textAlign: TextAlign.center,
+                            decoration: InputDecoration(
+                              hintText: 'Connect FILIPAY Card',
+                              hintStyle: TextStyle(fontSize: 20.0),
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) {
+                              // Handle the saved value
+                            },
+                            onFieldSubmitted: (value) {
+                              loadingConnect();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    child: Divider(
+                      color: Colors.grey,
+                      thickness: 5.0,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        TopupButton(
+                          label: "via ONLINE",
+                          imagename: "site-alt.png",
+                          onPressed: () {
+                            setState(() {
+                              selectedPaymentMethod = "via ONLINE";
+                            });
+                          },
+                        ),
+                        TopupButton(
+                          label: "via FILIPAY\nDistributor",
+                          imagename: "store-alt-solid.png",
+                          onPressed: () {
+                            setState(() {
+                              selectedPaymentMethod =
+                                  "via FILIPAY\nDistributor";
+                            });
+                          },
+                        ),
+                        TopupButton(
+                          label: "via Driver",
+                          imagename: "driver-man.png",
+                          onPressed: () {
+                            setState(() {
+                              selectedPaymentMethod = "via Driver";
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.7,
-            child: Divider(
-              color: Colors.grey,
-              thickness: 5.0,
+            Center(
+              child: _isLoading
+                  ? myComponents.simulateConnectLoading(
+                      context: context, loadText: "Please wait...")
+                  : Text(''),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                topupbutton(
-                  label: "via ONLINE",
-                  imagename: "site-alt.png",
-                  thisFunction: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SelectAmountPage()));
-                  },
-                ),
-                topupbutton(
-                  label: "via FILIPAY\nDistributor",
-                  imagename: "store-alt-solid.png",
-                  thisFunction: () {
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => SelectAmountPage()));
-                  },
-                ),
-                topupbutton(
-                  label: "via Driver",
-                  imagename: "driver-man.png",
-                  thisFunction: () {
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => SelectAmountPage()));
-                  },
-                ),
-              ],
-            ),
-          ),
-        ]),
+            myComponents.headerPageLabel(context, ""),
+          ],
+        ),
       ),
-      Center(
-        child: _isLoading
-            ? myComponents.simulateConnectLoading(
-                context: context, loadText: "Please wait...")
-            : Text(''),
-      ),
-      myComponents.headerPageLabel(context, ""),
-    ])));
+    );
   }
 }
 
-class topupbutton extends StatelessWidget {
-  const topupbutton(
-      {super.key,
-      required this.label,
-      required this.imagename,
-      required this.thisFunction});
+class TopupButton extends StatelessWidget {
+  const TopupButton({
+    Key? key,
+    required this.label,
+    required this.imagename,
+    required this.onPressed,
+  }) : super(key: key);
+
   final String label;
   final String imagename;
-  final void Function() thisFunction;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: thisFunction,
+      onTap: onPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
@@ -214,18 +222,21 @@ class topupbutton extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SelectAmountPage()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SelectAmountPage(),
+                        ),
+                      );
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xffb5e1ee),
-                          border: Border.all(
-                            width: 4.0,
-                            color: Color(0xff61a7da),
-                          )),
+                        shape: BoxShape.circle,
+                        color: Color(0xffb5e1ee),
+                        border: Border.all(
+                          width: 4.0,
+                          color: Color(0xff61a7da),
+                        ),
+                      ),
                       child: Padding(
                         padding: EdgeInsets.all(20.0),
                         child: Image(
