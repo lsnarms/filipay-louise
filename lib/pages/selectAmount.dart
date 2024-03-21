@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../widgets/components.dart';
-import 'package:hive/hive.dart'; // Import Hive package
+import 'package:hive/hive.dart'; 
 import 'enterAmount.dart';
 import 'eWallet.dart';
 import 'drawer.dart';
@@ -17,7 +17,7 @@ class SelectAmountPage extends StatefulWidget {
 class _SelectAmountPageState extends State<SelectAmountPage> {
   final Box _filipay = Hive.box('filipay');
 
-  double balance = 0.0; // Declare balance variable
+  double balance = 0.0;
 
   bool _isLoading = false;
   String username = "[name]";

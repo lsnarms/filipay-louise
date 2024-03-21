@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
 import '../widgets/components.dart';
 import 'drawer.dart';
 import 'qrcam.dart';
@@ -17,10 +18,19 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final Box _filipay = Hive.box('filipay');
+
   pageFunctions sample = pageFunctions();
   bool isPayAhead = true;
   String? fff;
-  double balance = 55350.00;
+  double balance = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Retrieve balance from Hive box
+    balance = _filipay.get('balance', defaultValue: 0.0);
+  }
 
   void switchPanelPOTG() {
     setState(() {
