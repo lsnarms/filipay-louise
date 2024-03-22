@@ -10,6 +10,8 @@ import '../functions/functions.dart';
 import '../pages/bookings.dart';
 import '../pages/waitingConfirmationPage.dart';
 import '../pages/login.dart';
+import 'dart:math';
+import 'package:intl/intl.dart';
 
 class pageComponents {
   pageFunctions pageFunc = pageFunctions();
@@ -738,6 +740,15 @@ class pageComponents {
     String alertDescription,
     double loadAmount,
   ) {
+    // Generate reference code, format date and time
+    String referenceCode =
+        "FP${Random().nextInt(999999).toString().padLeft(6, '0')}";
+    DateTime utcTime = DateTime.now().toUtc();
+    Duration philippinesOffset = Duration(hours: 8);
+    DateTime philippinesTime = utcTime.add(philippinesOffset);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(philippinesTime);
+    String formattedTime = DateFormat('h:mm a').format(philippinesTime);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -747,6 +758,9 @@ class pageComponents {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(
+                  height: 10,
+                ),
                 Text(
                   alertTitle,
                   style: TextStyle(
@@ -767,22 +781,52 @@ class pageComponents {
                 SizedBox(
                   height: 10.0,
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Amount: ",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      "₱${loadAmount.toStringAsFixed(2)}", // Display the amount
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(13, 93, 158, 1.0)),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
                 Text(
-                  "Amount:",
+                  "Reference Code: $referenceCode",
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.w400,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  "₱${loadAmount.toStringAsFixed(2)}", // Display the amount
+                  "Date: $formattedDate",
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Color(0xff17335a),
                   ),
                   textAlign: TextAlign.center,
+                ),
+                Text(
+                  "Time: $formattedTime",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 15,
                 ),
                 FittedBox(
                   fit: BoxFit.scaleDown,
@@ -802,7 +846,7 @@ class pageComponents {
                           color: Colors.white,
                         ),
                         child: QrImageView(
-                          data: 'QWERTYUIOP',
+                          data: referenceCode,
                           version: QrVersions.auto,
                           size: 200.0,
                         ),
@@ -810,17 +854,20 @@ class pageComponents {
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: TextButton(
-                    onPressed: onOkPressed,
-                    child: Text(
-                      "OK",
-                      style: TextStyle(
-                        color: Color.fromRGBO(24, 69, 125, 1.0),
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w700,
-                      ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                    onOkPressed(); // Call the function passed as parameter
+                  },
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Color.fromRGBO(24, 69, 125, 1.0),
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
