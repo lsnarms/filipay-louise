@@ -664,7 +664,7 @@ class pageComponents {
                         fontWeight: FontWeight.w300,
                       ),
                     ),
-                    Text("Driver"),
+                    Text("Online"),
                   ],
                 ),
                 Row(
@@ -866,6 +866,7 @@ class pageComponents {
                       Map<String, dynamic> transactionDetails = {
                         'userId': _currently_logged_user,
                         'amount': loadAmount,
+                        'Payment Method': 'Online',
                         'referenceCode': referenceCode,
                         'date': formattedDate,
                         'time': formattedTime,

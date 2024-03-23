@@ -117,7 +117,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                               _selectedFilter = value!;
                             });
                           },
-                          items: <String>['All', 'Card', 'App', 'Load']
+                          items: <String>['All', 'Online', 'App', 'Load']
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -218,9 +218,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       String time = transaction['time'];
 
       if (transaction['userId'] == _currently_logged_user &&
-          (_selectedFilter.toLowerCase() == 'all' ||
-              transaction['paymentMethod'].toLowerCase() ==
-                  _selectedFilter.toLowerCase())) {
+          (_selectedFilter == 'All' ||
+              transaction['Payment Method'] == _selectedFilter)) {
         Map<String, dynamic> transactionDetails = {
           'Amount': '+₱$amount',
           'Reference Code': '$referenceCode',
