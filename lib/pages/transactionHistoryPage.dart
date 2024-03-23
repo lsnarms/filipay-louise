@@ -222,7 +222,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               transaction['paymentMethod'].toLowerCase() ==
                   _selectedFilter.toLowerCase())) {
         Map<String, dynamic> transactionDetails = {
-          'Amount': '₱$amount',
+          'Amount': '+₱$amount',
           'Reference Code': '$referenceCode',
           'Payment Method': 'Online',
           'Service Fee': '₱5.00',
@@ -321,6 +321,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     List<Widget> widgets = [];
 
     transactionDetails.forEach((key, value) {
+      Color valueColor = Colors.black; // Default color
+      if (key == 'Amount' || key == '₱') {
+        valueColor = Colors.blue;
+      } else if (key == 'Status' && value == 'SUCCESSFUL') {
+        valueColor = Colors.green;
+      }
+
       widgets.add(
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -332,7 +339,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               Text(
                 '$key: ',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
                   fontSize: 12,
                   color: Colors.black,
                 ),
@@ -343,8 +349,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                   '$value',
                   textAlign: TextAlign.end, // Aligns the text to the right
                   style: TextStyle(
+                    fontWeight: FontWeight.bold,
                     fontSize: 12,
-                    color: Colors.black87,
+                    color: valueColor,
                   ),
                 ),
               ),
