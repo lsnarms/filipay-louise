@@ -224,8 +224,11 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
         Map<String, dynamic> transactionDetails = {
           'Amount': '₱$amount',
           'Reference Code': '$referenceCode',
-          'Date': 'Date: $date',
-          'Time': 'Time: $time',
+          'Payment Method': 'Online',
+          'Service Fee': '₱5.00',
+          'Date': '$date',
+          'Time': '$time',
+          'Status': 'SUCCESSFUL',
         };
 
         DateTime transactionDate = DateTime.parse(date);
