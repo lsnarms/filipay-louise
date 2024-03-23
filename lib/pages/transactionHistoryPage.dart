@@ -325,17 +325,27 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment:
+                CrossAxisAlignment.end, // Aligns text to the end
             children: [
               Text(
                 '$key: ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  color: Colors.black,
                 ),
               ),
+              SizedBox(width: 5),
               Expanded(
                 child: Text(
                   '$value',
+                  textAlign: TextAlign.end, // Aligns the text to the right
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black87,
+                  ),
                 ),
               ),
             ],
