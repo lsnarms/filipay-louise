@@ -12,6 +12,7 @@ import '../pages/waitingConfirmationPage.dart';
 import '../pages/login.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 class pageComponents {
   pageFunctions pageFunc = pageFunctions();
@@ -732,7 +733,6 @@ class pageComponents {
     );
   }
 
-  // Function to display the "Load Connect" dialog
   void loadConfirmed(
     BuildContext context,
     Function() onOkPressed,
@@ -740,7 +740,7 @@ class pageComponents {
     String alertDescription,
     double loadAmount,
   ) {
-    // Generate reference code, format date and time
+    // Generate reference code, format date and ti
     String referenceCode =
         "FP${Random().nextInt(999999).toString().padLeft(6, '0')}";
     DateTime utcTime = DateTime.now().toUtc();
@@ -861,6 +861,35 @@ class pageComponents {
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the dialog
                     onOkPressed(); // Call the function passed as parameter
+                    try {
+                      int _currently_logged_user = pageFunc.current_user_id;
+                      Map<String, dynamic> transactionDetails = {
+                        'userId': _currently_logged_user,
+                        'amount': loadAmount,
+                        'referenceCode': referenceCode,
+                        'date': formattedDate,
+                        'time': formattedTime,
+                      };
+
+                      // Add the transaction details to the Hive box 'filipay'
+                      List<Map<String, dynamic>> userTransactions = _filipay
+                          .get(
+                        'user_transactions_$_currently_logged_user',
+                        defaultValue: [],
+                      ).cast<
+                              Map<String,
+                                  dynamic>>(); // Cast to the correct type
+                      userTransactions.add(transactionDetails);
+                      _filipay.put(
+                        'user_transactions_$_currently_logged_user',
+                        userTransactions,
+                      );
+
+                      // Print the updated transaction history
+                      print('User Transactions: $userTransactions');
+                    } catch (e) {
+                      print('Error storing user transactions: $e');
+                    }
                   },
                   child: Text(
                     'OK',

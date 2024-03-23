@@ -12,7 +12,7 @@ class EnterAmountPage extends StatefulWidget {
 }
 
 class _EnterAmountPageState extends State<EnterAmountPage> {
-  double loadAmount = 0.0; // Instance variable to store the entered amount
+  double loadAmount = 0.0; 
   bool _isLoading = false;
   final FocusNode _focusNode = FocusNode();
 

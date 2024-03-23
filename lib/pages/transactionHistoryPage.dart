@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_application_2/widgets/background.dart';
-// import 'package:flutter_application_2/pages/paymentSuccessfulPage.dart';
-// import 'package:flutter_application_2/widgets/appbar.dart';
+import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import '../widgets/components.dart';
+import '../functions/functions.dart';
+import 'dart:convert';
+import 'dart:math';
 
 class TransactionHistoryPage extends StatefulWidget {
   const TransactionHistoryPage({Key? key, required this.title})
@@ -14,8 +16,10 @@ class TransactionHistoryPage extends StatefulWidget {
 }
 
 class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
-  String _selectedFilter = 'All';
+  final _filipay = Hive.box("filipay");
   late DateTime _selectedDate;
+  String _selectedFilter = 'All';
+  pageFunctions _functions = pageFunctions();
 
   @override
   void initState() {
@@ -29,8 +33,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     pageComponents myComponents = pageComponents();
     return Scaffold(
       key: scaffoldKey,
-      // appBar: myComponents.appBar(scaffoldKey: scaffoldKey),
-      // drawer: NavDrawer(),
       body: SafeArea(
         child: Stack(
           children: [
@@ -140,55 +142,58 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                     height: 20,
                   ),
                   Expanded(
-                    child: _buildFilteredTransactions().isEmpty
-                        ? Center(
-                            child: Text(
-                              'There are no transactions to display.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromRGBO(24, 70, 126, 1),
+                      child: _buildFilteredTransactions().isEmpty
+                          ? Center(
+                              child: Text(
+                                'There are no transactions to display.',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(24, 70, 126, 1),
+                                ),
                               ),
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: _buildFilteredTransactions().length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5.0),
-                                child: SizedBox(
-                                  width: 300, // Adjusted width
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 55),
-                                    decoration: BoxDecoration(
-                                      color: Color.fromRGBO(242, 249, 255, 1),
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          blurRadius: 4,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children:
-                                          _buildFilteredTransactions()[index]
-                                              ['details'],
+                            )
+                          : ListView.builder(
+                              itemCount: _buildFilteredTransactions().length,
+                              itemBuilder: (context, index) {
+                                Map<String, dynamic> transactionDetails =
+                                    _buildFilteredTransactions()[index]
+                                        ['details'];
+
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5.0),
+                                  child: SizedBox(
+                                    width: 300, // Adjusted width
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 10),
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 55),
+                                      decoration: BoxDecoration(
+                                        color: Color.fromRGBO(242, 249, 255, 1),
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.1),
+                                            blurRadius: 4,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: _buildTransactionWidgets(
+                                            transactionDetails),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                            shrinkWrap: true,
-                          ),
-                  ),
+                                );
+                              },
+                              shrinkWrap: true,
+                            )),
                 ],
               ),
             ),
@@ -199,126 +204,42 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   }
 
   List<Map<String, dynamic>> _buildFilteredTransactions() {
-    List<Map<String, dynamic>> transactions = [
-      {
-        'Amount': '-PHP 1800.00',
-        'Ref Code': 'ORNZNXS8YX7JUYBXVA2',
-        'Payment Method': 'CARD',
-        'Route': 'ALABANG STARMALL-NAGA, CAMARINES SUR',
-        'Date': '2024-03-03',
-        'Time': '3:13 PM',
-        'Status': 'PAID',
-      },
-      {
-        'Amount': '-PHP 13.00',
-        'Ref Code': 'ORNWGG66P2HV6UUAQ7T',
-        'Payment Method': 'LOAD',
-        'Service Fee': '5.00',
-        'Date': '2024-03-03',
-        'Time': '11:35 PM',
-        'Status': 'PAID',
-      },
-      {
-        'Amount': '+PHP 100.00',
-        'Reference Code': 'ORNZNXS8YX7JUYBXVA2',
-        'Payment Method': 'CARD',
-        'Service Fee': '5.00',
-        'Date': '2024-03-04',
-        'Time': '3:13 PM',
-        'Status': 'SUCCESSFUL',
-      },
-      {
-        'Amount': '+PHP 100.00',
-        'Reference Code': 'ORNZNXS8YX7JUYBXVA2',
-        'Payment Method': 'APP',
-        'Service Fee': '5.00',
-        'Date': '2024-03-04',
-        'Time': '3:13 PM',
-        'Status': 'SUCCESSFUL',
-      },
-    ];
-
     List<Map<String, dynamic>> filteredTransactions = [];
 
-    for (var transaction in transactions) {
-      DateTime transactionDate = DateTime.parse(transaction['Date']);
-      if (_selectedDate.year == transactionDate.year &&
-          _selectedDate.month == transactionDate.month &&
-          _selectedDate.day == transactionDate.day) {
-        if (_selectedFilter.toLowerCase() == 'all' ||
-            transaction['Payment Method'].toLowerCase() ==
-                _selectedFilter.toLowerCase()) {
-          filteredTransactions
-              .add({'details': _buildTransactionDetails(transaction)});
+    int _currently_logged_user = _functions.current_user_id;
+
+    List<dynamic>? hiveTransactionHistory = _filipay
+        .get('user_transactions_$_currently_logged_user', defaultValue: []);
+
+    for (var transaction in hiveTransactionHistory ?? []) {
+      String amount = transaction['amount'].toString();
+      String referenceCode = transaction['referenceCode'];
+      String date = transaction['date'];
+      String time = transaction['time'];
+
+      if (transaction['userId'] == _currently_logged_user &&
+          (_selectedFilter.toLowerCase() == 'all' ||
+              transaction['paymentMethod'].toLowerCase() ==
+                  _selectedFilter.toLowerCase())) {
+        Map<String, dynamic> transactionDetails = {
+          'Amount': '₱$amount',
+          'Reference Code': '$referenceCode',
+          'Date': 'Date: $date',
+          'Time': 'Time: $time',
+        };
+
+        DateTime transactionDate = DateTime.parse(date);
+        if (_selectedDate.year == transactionDate.year &&
+            _selectedDate.month == transactionDate.month &&
+            _selectedDate.day == transactionDate.day) {
+          filteredTransactions.add({'details': transactionDetails});
         }
       }
     }
+
+    print('Filtered Transactions: $filteredTransactions');
+
     return filteredTransactions;
-  }
-
-  List<Widget> _buildTransactionDetails(Map<String, dynamic> transaction) {
-    List<Widget> details = [];
-    transaction.forEach((key, value) {
-      if (key == 'Status') {
-        details.add(_buildTableRow(key, value, transaction['Status']!));
-      } else {
-        details.add(_buildTableRow(key, value.toString(), ''));
-      }
-    });
-    return details;
-  }
-
-  Widget _buildTableRow(String label, String value, String status) {
-    bool isPaid =
-        status.toLowerCase() == 'paid' || status.toLowerCase() == 'successful';
-    bool isFailed = status.toLowerCase() == 'failed';
-    bool isAmount = label.toLowerCase() == 'amount';
-    bool isPositiveAmount = value.startsWith('+');
-    bool isNegativeAmount = value.startsWith('-');
-
-    Color? amountColor;
-    if (isAmount) {
-      if (isPositiveAmount) {
-        amountColor = Color.fromRGBO(47, 128, 237, 1);
-      } else if (isNegativeAmount) {
-        amountColor = Color.fromRGBO(236, 28, 36, 1);
-      }
-    }
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            color: const Color.fromRGBO(77, 76, 77, 1),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 82.0),
-            child: Text(
-              value,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: isPaid
-                    ? Color.fromRGBO(19, 233, 109, 1)
-                    : isFailed
-                        ? Color.fromRGBO(236, 28, 36, 1)
-                        : amountColor ?? Colors.black,
-                fontStyle:
-                    isPaid || isFailed ? FontStyle.italic : FontStyle.normal,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -390,5 +311,36 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       default:
         return '';
     }
+  }
+
+  List<Widget> _buildTransactionWidgets(
+      Map<String, dynamic> transactionDetails) {
+    List<Widget> widgets = [];
+
+    transactionDetails.forEach((key, value) {
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$key: ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  '$value',
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+
+    return widgets;
   }
 }

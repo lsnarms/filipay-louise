@@ -118,6 +118,13 @@ class pageFunctions {
   }
 
   double getBalance() {
-        return _filipay.get('balance_${_currently_logged_user}', defaultValue: 0.0);
+    return _filipay.get('balance_${_currently_logged_user}', defaultValue: 0.0);
+  }
+
+  static List<Map<String, dynamic>> _user_transactionHistory = [];
+  List<Map<String, dynamic>> get transactionHistory => _user_transactionHistory;
+
+  void addTransaction(Map<String, dynamic> transactionDetails) {
+    _user_transactionHistory.add(transactionDetails);
   }
 }
